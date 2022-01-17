@@ -30,8 +30,8 @@ class IPResolver:
 
     def __init__(self,file_path=FILE_PATH):
         self.__file_path = file_path
-        self.__ip_container = set()
-        self.__response = dict()
+        self._ip_container = set()
+        self._response = dict()
         self.transform_csv_to_set()
 
 
@@ -48,13 +48,13 @@ class IPResolver:
         logger.info('started transformation from csv to set')
         for source, destination in zip(data_frame['Source'], data_frame['Destination']):
             if source.startswith(('192.168','172.16')) is False:
-                self.__ip_container.add(source)
+                self._ip_container.add(source)
             if destination.startswith(('192.168','172.16')) is False:
-                self.__ip_container.add(destination)
+                self._ip_container.add(destination)
             else:
                 continue
         logger.info('Finished moving ip address to set')
-        logger.info(f'Found {len(self.__ip_container)} unique public ips')
+        logger.info(f'Found {len(self._ip_container)} unique public ips')
 
     def execute_request(self):
         '''
@@ -63,14 +63,14 @@ class IPResolver:
         a finall result
         '''
         logger.info('Started compiling resolved ips')
-        for ip in self.__ip_container:
+        for ip in self._ip_container:
             resp = self.resolve_ip_by_api(ip)
             if resp is None:
                 continue
             elif resp['success'] is False:
-                self.__response[ip] = 'IP address is not allocated to any server but reserved'
+                self._response[ip] = 'IP address is not allocated to any server but reserved'
             else:
-                self.__response[ip] = {
+                self._response[ip] = {
                     'orgnization_name':resp['org'],
                     'isp':resp['isp'],
                     'country':resp['country'],
@@ -106,7 +106,7 @@ class IPResolver:
         '''
         logger.info('Started writing to file')
         with open('response.json', 'w') as f:
-            f.write(json.dumps(self.__response))
+            f.write(json.dumps(self._response))
         logger.info('Finished writing to file')
 
 
