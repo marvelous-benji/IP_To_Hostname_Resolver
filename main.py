@@ -3,7 +3,9 @@ I made use one the free APIs(which was: https: http://ipwhois.app)
 from rapid API which provided reasonable amount of informations
 concerning the server the users connected to. A result of the response
 is written to the response.json file.
-
+Response with the statement 'IP address not allocated....' means those
+IP address are reserved or are multicast ip addresses and not used as
+public IP for servers
 '''
 
 import json
